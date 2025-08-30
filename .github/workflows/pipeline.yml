@@ -19,3 +19,11 @@ jobs:
       - name: Check Style
         run: |
           npm run eslint
+
+      - name: Build
+        run: |
+          npm run build
+
+      - name: Test
+        run: |
+          npm test
