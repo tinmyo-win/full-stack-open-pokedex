@@ -26,8 +26,7 @@ jobs:
         run: |
           npm test
       - name: Install Playwright browsers
-        uses: microsoft/playwright-github-action@v1
-        # run: npx playwright install --with-deps
+        run: npx playwright install --with-deps
 
       - name: Start server
         run: npm run start-prod &
