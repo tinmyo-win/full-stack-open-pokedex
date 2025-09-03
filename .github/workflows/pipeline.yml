@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
 
 jobs:
   simple_deployment_pipeline:
@@ -41,6 +44,7 @@ jobs:
     name: Deploy app
     runs-on: ubuntu-latest
     needs: simple_deployment_pipeline
+    if: github.event_name == 'push'
     concurrency: deploy-group    # optional: ensure only one action runs at a time
     steps:
       - uses: actions/checkout@v4
