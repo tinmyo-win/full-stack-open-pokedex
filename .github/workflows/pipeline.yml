@@ -60,3 +60,19 @@ jobs:
       - run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      - name: Discord Webhook Notify Success
+        if: success()
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          message: 'Deployment successful! 🚀'
+          description: 'New version deployed to production'
+          details: 'Commit: ${{ github.sha }}\nAuthor: ${{ github.actor }}\nBranch: ${{ github.ref_name }}'
+      - name: Discord Webhook Notify Failure
+        if: failure()
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          message: 'Deployment failed! ❌'
+          description: 'Deployment to production failed'
+          details: 'Commit: ${{ github.sha }}\nAuthor: ${{ github.actor }}\nBranch: ${{ github.ref_name }}\nWorkflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
