@@ -60,19 +60,17 @@ jobs:
       - run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-      - name: Discord Webhook Notify Success
+      - name: Discord notification success
         if: success()
-        uses: rjstone/discord-webhook-notify@v2.2.1
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        uses: Ilshidur/action-discord@0.4.0
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          message: 'Deployment successful! 🚀'
-          description: 'New version deployed to production'
-          details: 'Commit: ${{ github.sha }}\nAuthor: ${{ github.actor }}\nBranch: ${{ github.ref_name }}'
-      - name: Discord Webhook Notify Failure
+          args: '✅ Deployment successful! 🚀\nCommit: {{ EVENT_PAYLOAD.head_commit.id }}\nAuthor: {{ EVENT_PAYLOAD.head_commit.author.name }}\nBranch: {{ GITHUB_REF_NAME }}'
+      - name: Discord notification failure
         if: failure()
-        uses: rjstone/discord-webhook-notify@v2.2.1
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        uses: Ilshidur/action-discord@0.4.0
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          message: 'Deployment failed! ❌'
-          description: 'Deployment to production failed'
-          details: 'Commit: ${{ github.sha }}\nAuthor: ${{ github.actor }}\nBranch: ${{ github.ref_name }}\nWorkflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          args: '❌ Deployment failed!\nCommit: {{ EVENT_PAYLOAD.head_commit.id }}\nAuthor: {{ EVENT_PAYLOAD.head_commit.author.name }}\nBranch: {{ GITHUB_REF_NAME }}\nWorkflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
