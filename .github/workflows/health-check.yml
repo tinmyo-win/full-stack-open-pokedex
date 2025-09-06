@@ -1,0 +1,38 @@
+# name: Health Check
+
+# on:
+#   schedule:
+#     # Run every hour at minute 0
+#     - cron: '0 * * * *'
+#   workflow_dispatch: # Allow manual triggering
+
+# jobs:
+#   health_check:
+#     name: URL Health Check
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Check application health
+#         uses: Jtalk/url-health-check-action@v4
+#         with:
+#           url: https://full-stack-open-pokedex-fly.fly.dev
+#           max-attempts: 3
+#           retry-delay: 30s
+#           retry-all: true
+          
+#       - name: Discord Webhook Notify Success
+#         if: success()
+#         uses: rjstone/discord-webhook-notify@v2.2.1
+#         with:
+#           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+#           message: 'Health Check Passed ✅'
+#           description: 'Application is running normally'
+#           details: 'URL: https://full-stack-open-pokedex-fly.fly.dev\nTime: ${{ github.event.schedule || "Manual trigger" }}\nStatus: Healthy'
+          
+#       - name: Discord Webhook Notify Failure
+#         if: failure()
+#         uses: rjstone/discord-webhook-notify@v2.2.1
+#         with:
+#           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+#           message: 'Health Check Failed ❌'
+#           description: 'Application appears to be down or unresponsive'
+#           details: 'URL: https://full-stack-open-pokedex-fly.fly.dev\nTime: ${{ github.event.schedule || "Manual trigger" }}\nStatus: Failed\nWorkflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
